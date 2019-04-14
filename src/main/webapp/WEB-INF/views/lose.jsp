@@ -1,33 +1,16 @@
-<%@page import="java.util.List"%>
-<%@page import="hxy.inspec.inspector.po.Orders"%>
-<%@page import="hxy.inspec.inspector.po.User"%>
-<%@page import="hxy.inspec.inspector.services.OrderService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!doctype html>
-<%
-User user = (User) request.getSession().getAttribute("user");
-List<Orders>  ls=null;
-if(user!=null){
-
-Orders orders =new Orders();
-orders.setQualtel(user.getUserTel());
-orders.setStatus("2");//查询订单已分配的订单
- OrderService orderService = new OrderService();
-   ls= orderService.findUserByQualtelAndStatus(orders);
-}
-else{
-	request.getRequestDispatcher("/lose").forward(request, response);
-}
-
-	
-%>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
 <html class="no-js" lang="">
 <!--<![endif]-->
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>待验货</title>
+<title>登录失效</title>
 <meta name="description" content="Ela Admin - HTML5 Admin Template">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="assets/css/normalize.css">
@@ -63,53 +46,10 @@ html, body {
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">待验货订单</strong>
+							<strong class="card-title">登录过期</strong>
 						</div>
 						<div class="card-body">
-							<table id="bootstrap-data-table"
-								class="table table-striped table-bordered">
-								<thead>
-									<tr>
-										<th>订单号</th>
-										<th>验货日期</th>
-										<th>工厂名称</th>
-										<th>产品名称</th>
-										<th>状态</th>
-										<th>操作</th>
-
-									</tr>
-								</thead>
-								<tbody>
-								
-								<%
-								if(ls!=null&&ls.size()!=0){
-									for(int i=0;i<ls.size();i++){
-										Orders o = ls.get(i);
-										%>
-										
-												<tr>
-										<td><%=o.getOrderid() %></td>
-										<td><%=o.getExcedate() %></td>
-										<td><%=o.getFactoryname() %></td>
-										<td><%=o.getGoods() %></td>
-										<td><%=o.getStatusString()%></td>
-										<td><a href="details?id=<%=o.getOrderid() %>">详情</a></td>
-
-									</tr>
-										
-										
-										<% 
-									}
-									
-								}
-								
-								
-								
-								%>
-								
-
-								</tbody>
-							</table>
+							<p>你的登录已经过期，<a href="login"  target="_top">请点击<strong>重新登录</strong></a></p>
 						</div>
 					</div>
 				</div>
@@ -123,7 +63,6 @@ html, body {
 
 
 	<div class="clearfix"></div>
-
 
 
 	<!-- Right Panel -->

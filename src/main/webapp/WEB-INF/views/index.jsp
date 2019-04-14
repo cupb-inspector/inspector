@@ -220,7 +220,7 @@
                         <div class="user-menu dropdown-menu">
                             <a class="nav-link" href="personal" target="myiframe"><i class="fa fa- user"></i>账户设置</a>
 
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>安全退出</a>
+                            <a class="nav-link" href="user-login-out"><i class="fa fa- user"></i>安全退出</a>
 
                         </div>
                     </div>

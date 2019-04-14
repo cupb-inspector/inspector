@@ -4,27 +4,27 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="User">
-	<insert id="insert" parameterType="hxy.inspec.customer.po.User"
+	<insert id="insert" parameterType="hxy.inspec.inspector.po.User"
 		useGeneratedKeys="true">
-		insert into cususer(custel, cusname ,
-		cuspasswd ,cusaddress,cusdate,cusvip,custrade,cusgrade )
-		values(#{custel} ,#{cusname}, #{cuspasswd} ,
-		#{cusaddress},#{cusdate},#{cusvip},#{custrade},#{cusgrade})
+		insert into inspector(userName, userTel ,
+		userPasswd ,userGrade,province,city,district,address,rmb )
+		values(#{userName} ,#{userTel}, #{userPasswd} ,
+		#{userGrade},#{province},#{city},#{district},#{address},#{rmb})
 	</insert>
-	<select id="selectAll" resultType="hxy.inspec.customer.po.User">
-		select * from cususer
+	<select id="selectAll" resultType="hxy.inspec.inspector.po.User">
+		select * from inspector
 	</select>
 	<select id="findUserByNumber" parameterType="String"
-		resultType="hxy.inspec.customer.po.User">
-		SELECT * FROM cususer WHERE custel=#{custel}
+		resultType="hxy.inspec.inspector.po.User">
+		SELECT * FROM inspector WHERE userTel=#{userTel}
 	</select>
 	<!-- 删除 -->
-	<delete id="delete" parameterType="hxy.inspec.customer.po.User">
-		delete from cususer where custel=#{custel}
+	<delete id="delete" parameterType="hxy.inspec.inspector.po.User">
+		delete from inspector where custel=#{custel}
 	</delete>
 	<!-- 修改用户 -->
-	<update id="update" parameterType="hxy.inspec.customer.po.User">
-		update cususer set cusname=#{cusname},cususerid=#{cususerid},ttkdpasswd1=#{ttkdpasswd1},ttkdpasswd=#{ttkdpasswd},passwd=#{passwd},date=#{date},address=#{address}
+	<update id="update" parameterType="hxy.inspec.inspector.po.User">
+		update inspector set userName=#{userName},userTel=#{userTel},ttkdpasswd1=#{ttkdpasswd1},ttkdpasswd=#{ttkdpasswd},passwd=#{passwd},date=#{date},address=#{address}
 		where custel=#{custel}
 	</update>
 
