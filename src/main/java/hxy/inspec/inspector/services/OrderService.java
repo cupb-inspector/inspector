@@ -69,6 +69,17 @@ public class OrderService {
 			return false;
 		}
 	}
+
+	public boolean updateReport(Orders order) {
+		// TODO Auto-generated method stub
+		OrdersDao ordersDao = new OrdersDao();
+		int flag = ordersDao.updateReport(order);
+		if (flag == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	
 	

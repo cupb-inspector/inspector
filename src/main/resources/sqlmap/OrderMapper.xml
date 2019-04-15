@@ -62,5 +62,10 @@
 		update orders set
 		qualtel=#{qualtel},status=#{status} where orderid=#{orderid}
 	</update>
+		
+		<update id="updateReport" parameterType="hxy.inspec.inspector.po.Orders">
+		update orders set
+		reportfile=#{reportfile},reportfileuuid=#{reportfileuuid},status=#{status} where orderid=#{orderid}
+	</update>
 	
 </mapper>

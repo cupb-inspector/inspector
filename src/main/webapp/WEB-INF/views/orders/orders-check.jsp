@@ -19,8 +19,6 @@ orders.setStatus("2");//查询订单已分配的订单
 else{
 	request.getRequestDispatcher("/lose").forward(request, response);
 }
-
-	
 %>
 <html class="no-js" lang="">
 <!--<![endif]-->
@@ -96,18 +94,11 @@ html, body {
 										<td><a href="details?id=<%=o.getOrderid() %>">详情</a></td>
 
 									</tr>
-										
-										
 										<% 
 									}
-									
 								}
-								
-								
-								
 								%>
 								
-
 								</tbody>
 							</table>
 						</div>

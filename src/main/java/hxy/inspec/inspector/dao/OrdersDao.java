@@ -147,4 +147,21 @@ public class OrdersDao {
 		return flag;
 	}
 
+
+
+
+	public int updateReport(Orders order) {
+		// TODO Auto-generated method stub
+		SqlSession sqlSession = null;
+		try {
+			sqlSession = DataConnection.getSqlSession();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int flag=sqlSession.update("Orders.updateReport", order);
+		sqlSession.commit();//清空缓存
+		sqlSession.close();
+		return flag;
+	}
+
 }

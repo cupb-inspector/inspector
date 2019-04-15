@@ -29,6 +29,66 @@ html, body {
 	height: 100%;
 }
 </style>
+
+  <script src="js/jquery.min.js"></script>
+  <!--基于jQuery写的消息提示
+  https://www.awaimai.com/1627.html
+    -->
+  <link rel="stylesheet" href="hxy/css/hxy-alert.css">
+  <script src="hxy/js/hxy-alert.js"></script>
+  
+
+  <script type="text/javascript">
+    function rob(e,id,flag) {
+    	  
+    	  console.log(id+"\t");
+    		$.ajax({
+    			//几个参数需要注意一下
+    			url : "${pageContext.request.contextPath}/conform",//url
+    			type : "POST",//方法类型
+    			async : false,//同步需要等待服务器返回数据后再执行后面的两个函数，success和error。如果设置成异步，那么可能后面的success可能执行后还是没有收到消息。
+
+    			dataType : "json",//预期服务器返回的数据类型
+    			cache : false,
+    			data : {
+    				"id" : id,
+    				"flag":flag
+    			},//这个是发送给服务器的数据
+
+    			success : function(result) {
+    				console.log(result);//打印服务端返回的数据(调试用)
+    				if (result.resultCode == 200) {
+    					//跳转到首页		$('.alert').removeClass('alert-success')
+    					$('.alert').html('抢单成功').addClass('alert-success').show().delay(2000).fadeOut();
+        				
+    				} else if (result.resultCode == 601) {
+    					//	$(this).remove();
+    					$('.alert').removeClass('alert-success')
+    					$('.alert').html('密码错误').addClass('alert-warning').show().delay(2000).fadeOut();
+        				
+    					document.getElementById("passwd").value=''
+    					
+    				}else if (result.resultCode == 404) {
+    					//	$(this).remove();
+    					$('.alert').removeClass('alert-success')
+    					$('.alert').html('手机号未注册').addClass('alert-warning').show().delay(2000).fadeOut();
+        				
+    					
+    				};
+    			},
+    			error : function() {
+    				//console.log(data);
+    				$('.alert').removeClass('alert-success')
+					$('.alert').html('检查网络是否连接').addClass('alert-warning').show().delay(2000).fadeOut();
+    				
+    			}
+    		});
+    }
+      
+    </script>
+
+
+
 </head>
 <body>
 
@@ -42,7 +102,6 @@ html, body {
 								<h4>详情</h4>
 							</div>
 							<div class="card-body">
-								<div class="alert alert-secondary" role="alert">
 									<h4 class="alert-heading">订单</h4>
 									<br />
 									<form action="#" method="post" class="form-horizontal">
@@ -123,36 +182,19 @@ html, body {
 										</div>
 
 									</form>
-								</div>
-								<div class="alert alert-info" role="alert">
-									<h4 class="alert-heading">报告</h4>
-									<br />
-									<p>
-										<i class="fa fa-envelope-o"></i> 报告 <a href=""> <span
-											class="pull-right">下载</span></a>
-									<p>
-								</div>
-								<div class="alert alert-secondary" role="alert">
-									<h4 class="alert-heading">评价</h4>
-									<br />
-									<p>
-										<sapn>Aww yeah, you successfully read this important
-										alert message. This example text is going to run a bit longer
-										so that you can see how spacing within an alert works with
-										this kind of content.</sapn>
-									</p>
-
-								</div>
-								<div class="alert alert-info" role="alert">
-									<h4 class="alert-heading">付款</h4>
-									<p>Aww yeah, you successfully read this important alert
-										message. This example text is going to run a bit longer so
-										that you can see how spacing within an alert works with this
-										kind of content.</p>
-									<hr>
-									<p class="mb-0">Whenever you need to, be sure to use margin
-										utilities to keep things nice and tidy.</p>
-								</div>
+					
+								<div class="card">
+                                <div class="card-header">
+                                    <strong>确认订单 </strong>
+                                    <small>订单可以在验货日期的24小时前取消。24小时内取消会扣分。
+                                        <code>重要</code>
+                                    </small>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button"  onclick="rob(this,${ordersId},'conform')" class="btn btn-success btn-lg">接受</button>
+                                    <button type="button"  onclick="rob(this,${ordersId},'cancel')" class="btn btn-danger btn-lg">拒绝</button>
+                                </div>
+                            </div><!-- /# card -->
 
 							</div>
 					

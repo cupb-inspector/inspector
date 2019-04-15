@@ -110,6 +110,57 @@ public class OrderController {
 		User user = (User) request.getSession().getAttribute("user");
 
 	}
+	
+	
+	
+	@RequestMapping(value = "/conform", method = RequestMethod.POST)
+	public void conformOrders(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+		// 获取用户是否登录
+		User user = (User) request.getSession().getAttribute("user");
+
+		int resultCode = -1;
+		if (user != null) {
+			String id = request.getParameter("id").trim();// 执行日期
+			String flag = request.getParameter("flag").trim();// 执行日期
+			Orders order = new Orders();
+			order.setOrderid(id);
+			
+			if("cancel".equals(flag))
+			{
+				logger.info("质检员拒绝了订单");
+				order.setStatus("1");//如果质检员拒绝，那么直接修改状态为1
+			}
+				else if("conform".equals(flag)) {
+					logger.info("质检员接受了订单");
+					order.setStatus("3");//自己抢单的订单直接正在验货
+				}
+		
+
+//			为该用户更新订单，依据订单的id查找订单，修改质检员的电话号码
+			OrderService orderService = new OrderService();
+			if(orderService.updateInspector(order)) {
+				resultCode = 200;
+			}else {
+				resultCode = 500;
+			};
+
+		} else {
+
+		}
+		logger.info("返回注册信息");
+		org.json.JSONObject user_data = new org.json.JSONObject();
+		user_data.put("resultCode", resultCode);
+		user_data.put("key2", "today4");
+		user_data.put("key3", "today2");
+		String jsonStr2 = user_data.toString();
+		response.setCharacterEncoding("UTF-8");
+		try {
+			response.getWriter().append(jsonStr2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 	@RequestMapping(value = "/rob", method = RequestMethod.POST)
 	public void robOrders(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
@@ -122,7 +173,7 @@ public class OrderController {
 			Orders order = new Orders();
 			order.setQualtel(user.getUserTel());
 			order.setOrderid(id);
-			order.setStatus("2");//已分配
+			order.setStatus("3");//自己抢单的订单直接正在验货
 
 //			为该用户更新订单，依据订单的id查找订单，修改质检员的电话号码
 			OrderService orderService = new OrderService();
@@ -197,6 +248,54 @@ public class OrderController {
 		
 	}
 	
+	
+	@RequestMapping(value = "/details2", method = RequestMethod.GET)
+	public String details2(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+		// 获取用户是否登录
+		User user = (User) request.getSession().getAttribute("user");
+		if (user!=null) {
+			
+			String ordersId = request.getParameter("id").trim();// 备注
+			//先依据id查询该订单，再判断该订单是否是该用户的，防止恶意的爬虫
+			OrderService orderService = new OrderService();
+			try {
+			Orders orders=	orderService.selectAllById(ordersId);
+			if (orders!=null) {
+				model.addAttribute("status", orders.getStatusString());
+				model.addAttribute("ordersId", ordersId);
+				model.addAttribute("goods", orders.getGoods());
+				model.addAttribute("custel", orders.getCustel());
+				model.addAttribute("exceData", orders.getExcedate());
+				String inspectTel=orders.getQualtel();
+				if("null".equals(inspectTel)) {
+					model.addAttribute("inspec", "请填写质检员号码");
+				}else
+					model.addAttribute("inspec", orders.getQualtel());
+				
+				
+				model.addAttribute("exceData", orders.getExcedate());
+				model.addAttribute("factoyName", orders.getFactoryname());
+				model.addAttribute("facAddress", orders.getFactoryaddress());
+				model.addAttribute("facMan", orders.getFactoryman());
+				model.addAttribute("facTel", orders.getFactorytel());
+				model.addAttribute("date", orders.getDate());
+				model.addAttribute("", orders.getExcedate());
+			}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
+		
+			
+			return "orders/orders-details2";
+		}
+		else
+			return "lose";
+		
+	}
 	
 
 }

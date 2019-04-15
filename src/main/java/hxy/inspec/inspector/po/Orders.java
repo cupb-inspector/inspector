@@ -15,6 +15,8 @@ public class Orders {
 	private String factorytel;
 	private String profile;
 	private String file;
+	private String fileuuid;
+	private String reportfileuuid;
 	private String reportfile;
 	private String status;
 	private String fee;
@@ -28,16 +30,16 @@ public class Orders {
 		String value="未知";
 		switch (this.status) {
 		case "1":
-			value="提交成功";
+			value="提交成功";//提交成功，等待
 			break;
 		case "2":
-			value="订单已分配";
+			value="订单已分配";//
 			break;
 		case "3":
 			value="正在验货";
 			break;
 		case "4":
-			value="报告生成中";
+			value="报告已提交";
 			break;
 		case "5":
 			value="报告提交完成";
