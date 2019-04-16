@@ -113,8 +113,8 @@
 				<div class="login-form">
 					<div>
 						<div class="form-group">
-							<label>手机号码</label> <input type="email" id="tel"
-								class="form-control" placeholder="Email">
+							<label>手机号码</label> <input type="phone" id="tel"
+								class="form-control" placeholder="手机号码">
 						</div>
 						<div class="form-group">
 							<label>密码</label> <input type="password" id="passwd"
