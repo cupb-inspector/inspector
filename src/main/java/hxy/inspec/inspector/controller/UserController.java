@@ -2,6 +2,7 @@ package hxy.inspec.inspector.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import hxy.inspec.inspector.po.User;
 import hxy.inspec.inspector.services.UserService;
+import hxy.inspec.inspector.util.CodeMd5;
 
 @Controller
 @RequestMapping("/")
@@ -31,7 +33,7 @@ public class UserController {
 
 	@RequestMapping(value = "/loginVerify", method = RequestMethod.POST)
 	public void loginVerify(ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+			throws IOException, NoSuchAlgorithmException {
 		int resultCode = 0;
 		String tel = null;
 		String password = null;
@@ -51,7 +53,10 @@ public class UserController {
 			if (user != null) {
 				logger.info("用户存在" + user.getUserName());
 				// 检查密码
-				if (password.equals(user.getUserPasswd())) {
+				CodeMd5 codeMd5 = new CodeMd5();
+				String newpasswd = codeMd5.codeMd5(password);
+				
+				if (newpasswd.equals(user.getUserPasswd())) {
 					// 匹配成功
 					resultCode = 200;
 					// 把用户对象存储到session
@@ -81,7 +86,7 @@ public class UserController {
 
 	@RequestMapping(value = "/register-user", method = RequestMethod.POST)
 	public void userRegister(ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+			throws IOException, NoSuchAlgorithmException {
 		int resultCode = 0;
 		try {
 			// 返回页面防止出现中文乱码
@@ -106,9 +111,12 @@ public class UserController {
 			logger.info("存在null");
 		}
 		if (flag) {
+			
+			CodeMd5 codeMd5 = new CodeMd5();
+			String newpasswd = codeMd5.codeMd5(password);
 			User user = new User();
 			user.setUserName(username);
-			user.setUserPasswd(password);
+			user.setUserPasswd(newpasswd);
 			user.setUserTel(tel);
 			user.setEmail(email);
 
