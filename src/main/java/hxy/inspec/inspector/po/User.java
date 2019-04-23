@@ -14,6 +14,7 @@ public class User {
 	private String city;
 	private String district;
 	private String address;
+	private String email;
 	private String rmb;//人民币
 	private String orders;//订单数
 	private String integral;

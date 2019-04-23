@@ -91,6 +91,7 @@ public class ReportController {
 				String uuid = UUID.randomUUID().toString().replace("-", "");;// 全球唯一标识码
 
 				String reportfileuuid = uuid + fileName;
+				logger.info("Length of reportFileUUID:"+reportfileuuid.length());
 
 				File fileFolder = new File("reports");
 				if (!fileFolder.exists()) {

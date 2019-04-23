@@ -96,7 +96,7 @@ public class ApplicationStartListener implements ServletContextListener, Servlet
 		Connection connection = ConnectionUtil.getConnection();
 		String sql = "create table IF NOT EXISTS  orders (orderid int not null primary key  AUTO_INCREMENT,  `custel` VARCHAR(45) NULL, `qualtel` VARCHAR(45) NULL,  `excedate` VARCHAR(45) NULL,  `date` VARCHAR(45) NULL,\n"
 				+ "  `factoryname` VARCHAR(45) NULL,\n" + "  `factoryaddress` VARCHAR(45) NULL,\n"
-				+ "  `factoryman` VARCHAR(45) NULL,`factorytel` VARCHAR(45) NULL,`profile` VARCHAR(45) NULL,`file` VARCHAR(45) NULL,`reportfile` VARCHAR(45) NULL,`status` VARCHAR(45) NULL,`fee` VARCHAR(45) NULL,`cost` VARCHAR(45) NULL,`othercost` VARCHAR(45) NULL,`profit` VARCHAR(45) NULL)default charset=utf8; ";
+				+ "  `factoryman` VARCHAR(45) NULL,`factorytel` VARCHAR(45) NULL,`profile` VARCHAR(45) NULL,`file` VARCHAR(45) NULL,`fileuuid` VARCHAR(200) NULL,`reportfile` VARCHAR(45) NULL,`reportfileuuid` VARCHAR(200) NULL,`status` VARCHAR(45) NULL,`fee` VARCHAR(45) NULL,`cost` VARCHAR(45) NULL,`othercost` VARCHAR(45) NULL,`profit` VARCHAR(45) NULL,`goods` VARCHAR(45) NULL)default charset=utf8; ";
 		PreparedStatement preparedStatement = ConnectionUtil.getPreparedStatement(connection, sql);
 		try {
 			int flag= preparedStatement.executeUpdate();
@@ -106,7 +106,7 @@ public class ApplicationStartListener implements ServletContextListener, Servlet
 			logger.error("数据库连接失败！");
 		}
 
-		String sql0 = "create table IF NOT EXISTS  inspector (userId int not null primary key  AUTO_INCREMENT, `userName` VARCHAR(45) NULL, `userTel` VARCHAR(45) NULL,`userPasswd` VARCHAR(45) NULL ,`userGrade` VARCHAR(45) NULL ,`province` VARCHAR(45) NULL ,`city` VARCHAR(45) NULL ,`district` VARCHAR(45) NULL ,`address` VARCHAR(55) NULL,`rmb` VARCHAR(55) NULL,`mail` VARCHAR(55) NULL  )default charset=utf8; ";
+		String sql0 = "create table IF NOT EXISTS  inspector (userId int not null primary key  AUTO_INCREMENT, `userName` VARCHAR(45) NULL, `userTel` VARCHAR(45) NULL,`userPasswd` VARCHAR(45) NULL ,`userGrade` VARCHAR(45) NULL ,`province` VARCHAR(45) NULL ,`city` VARCHAR(45) NULL ,`district` VARCHAR(45) NULL ,`address` VARCHAR(55) NULL,`rmb` VARCHAR(55) NULL,`email` VARCHAR(55) NULL  )default charset=utf8; ";
 		PreparedStatement preparedStatement0 = ConnectionUtil.getPreparedStatement(connection, sql0);
 		try {
 			logger.info("尝试新建user表");

@@ -7,9 +7,9 @@
 	<insert id="insert" parameterType="hxy.inspec.inspector.po.User"
 		useGeneratedKeys="true">
 		insert into inspector(userName, userTel ,
-		userPasswd ,userGrade,province,city,district,address,rmb )
+		userPasswd ,userGrade,province,city,district,address,rmb,email )
 		values(#{userName} ,#{userTel}, #{userPasswd} ,
-		#{userGrade},#{province},#{city},#{district},#{address},#{rmb})
+		#{userGrade},#{province},#{city},#{district},#{address},#{rmb},#{email})
 	</insert>
 	<select id="selectAll" resultType="hxy.inspec.inspector.po.User">
 		select * from inspector
