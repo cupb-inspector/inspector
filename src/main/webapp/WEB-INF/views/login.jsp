@@ -118,12 +118,11 @@
 						</div>
 						<div class="form-group">
 							<label>密码</label> <input type="password" id="passwd"
-								class="form-control" placeholder="Password">
+								class="form-control" placeholder="密码">
 						</div>
 						<div class="checkbox">
-							<label> <input type="checkbox"> Remember Me
-							</label> <label class="pull-right"> <a href="#">Forgotten
-									Password?</a>
+							<label> <input type="checkbox"> 记住密码
+							</label> <label class="pull-right"> <a href="#">忘记密码?</a>
 							</label>
 
 						</div>
