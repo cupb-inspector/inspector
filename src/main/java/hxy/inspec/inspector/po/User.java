@@ -14,10 +14,10 @@ public class User {
 	private String city;
 	private String district;
 	private String address;
-	private String email;
+	private String email;//质检员邮箱
 	private String rmb;//人民币
 	private String orders;//订单数
-	private String integral;
-	private String status;
+	private String integral;//积分
+	private String status;//质检员状态
 
 }

@@ -35,7 +35,7 @@ public class OrdersDao {
 	
 	
 	
-	public  List<Orders>  findUserByQualtelAndStatus(Orders ordersId) {
+	public  List<Orders>  findUserByQualIdAndStatus(Orders ordersId) {
 
 		SqlSession sqlSession = null;
 		try {
@@ -43,7 +43,7 @@ public class OrdersDao {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		 List<Orders>  user = sqlSession.selectList("Orders.findUserByQualtelAndStatus", ordersId);
+		 List<Orders>  user = sqlSession.selectList("Orders.findUserByQualIdAndStatus", ordersId);
 		sqlSession.commit();//清空缓存
 		sqlSession.close();
 		return user;

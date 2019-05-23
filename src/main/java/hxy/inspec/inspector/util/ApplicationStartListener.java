@@ -105,7 +105,7 @@ public class ApplicationStartListener implements ServletContextListener, Servlet
 			e.printStackTrace();
 			logger.error("数据库连接失败！");
 		}
-		String sql0 = "create table IF NOT EXISTS  inspector (userId int not null primary key  AUTO_INCREMENT, `userName` VARCHAR(45) NULL, `userTel` VARCHAR(45) NULL,`userPasswd` VARCHAR(24) NULL ,`userGrade` VARCHAR(45) NULL ,`province` VARCHAR(45) NULL ,`city` VARCHAR(45) NULL ,`district` VARCHAR(45) NULL ,`address` VARCHAR(55) NULL,`rmb` VARCHAR(55) NULL,`email` VARCHAR(55) NULL  )default charset=utf8; ";
+		String sql0 = "create table IF NOT EXISTS  inspector (userId int not null primary key  AUTO_INCREMENT, `userName` VARCHAR(45) NULL, `userTel` VARCHAR(45) NULL,`userPasswd` VARCHAR(24) NULL ,`userGrade` VARCHAR(45) NULL ,`province` VARCHAR(45) NULL ,`city` VARCHAR(45) NULL ,`district` VARCHAR(45) NULL ,`address` VARCHAR(55) NULL,`rmb` VARCHAR(15) default '0',  `orders` VARCHAR(15) default '0' , `integral` VARCHAR(15) default '0', `status` VARCHAR(15) default '0' ,`email` VARCHAR(55) NULL  )default charset=utf8; ";
 		PreparedStatement preparedStatement0 = ConnectionUtil.getPreparedStatement(connection, sql0);
 		try {
 			logger.info("尝试新建user表");

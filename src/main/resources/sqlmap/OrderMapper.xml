@@ -8,7 +8,7 @@
 
 	<insert id="insert" parameterType="hxy.inspec.inspector.po.Orders"
 		useGeneratedKeys="true">
-		insert into orders (custel,qualtel,excedate,date,factoryname,factoryaddress,factoryman,factorytel,profile,file,reportfile,status,fee,cost,othercost,profit,goods) values (#{custel},#{qualtel},#{excedate},#{date},#{factoryname},#{factoryaddress},#{factoryman},#{factorytel},#{profile},#{file},#{reportfile},#{status},#{fee},#{cost},#{othercost},#{profit},#{goods})
+		insert into orders (cusId,qualId,excedate,date,factoryname,factoryaddress,factoryman,factorytel,profile,file,reportfile,status,fee,cost,othercost,profit,goods) values (#{custel},#{qualtel},#{excedate},#{date},#{factoryname},#{factoryaddress},#{factoryman},#{factorytel},#{profile},#{file},#{reportfile},#{status},#{fee},#{cost},#{othercost},#{profit},#{goods})
 	</insert>
 	
 	
@@ -39,9 +39,9 @@
 	</select>
 	
 		<!-- 查询所有质检员的订单和状态 -->
-	<select id="findUserByQualtelAndStatus" parameterType="hxy.inspec.inspector.po.Orders"
+	<select id="findUserByQualIdAndStatus" parameterType="hxy.inspec.inspector.po.Orders"
 		resultType="hxy.inspec.inspector.po.Orders">
-		SELECT * FROM orders WHERE qualtel=#{qualtel} and status=#{status}
+		SELECT * FROM orders WHERE qualId=#{qualId} and status=#{status}
 	</select>
 	
 	

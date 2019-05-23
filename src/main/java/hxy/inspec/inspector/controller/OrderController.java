@@ -65,7 +65,7 @@ public class OrderController {
 				String date = dateFormat.format(now);
 				status = "1";// 1.提交成功 2.正在验货员正在接单 3.验货员已经出发，4.报告撰写中，5，已完成
 				Orders order = new Orders();
-				order.setCustel(user.getUserTel());
+				order.setCusId(user.getUserTel());
 				order.setCost(cost);
 				order.setDate(date);
 				order.setExcedate(excdate);
@@ -171,7 +171,7 @@ public class OrderController {
 		if (user != null) {
 			String id = request.getParameter("id").trim();// 执行日期
 			Orders order = new Orders();
-			order.setQualtel(user.getUserTel());
+			order.setQualId(user.getUserTel());
 			order.setOrderid(id);
 			order.setStatus("3");//自己抢单的订单直接正在验货
 
@@ -215,13 +215,13 @@ public class OrderController {
 				model.addAttribute("status", orders.getStatusString());
 				model.addAttribute("ordersId", ordersId);
 				model.addAttribute("goods", orders.getGoods());
-				model.addAttribute("custel", orders.getCustel());
+				model.addAttribute("custel", orders.getCusId());
 				model.addAttribute("exceData", orders.getExcedate());
-				String inspectTel=orders.getQualtel();
+				String inspectTel=orders.getQualId();
 				if("null".equals(inspectTel)) {
 					model.addAttribute("inspec", "请填写质检员号码");
 				}else
-					model.addAttribute("inspec", orders.getQualtel());
+					model.addAttribute("inspec", orders.getQualId());
 				
 				
 				model.addAttribute("exceData", orders.getExcedate());
@@ -264,13 +264,13 @@ public class OrderController {
 				model.addAttribute("status", orders.getStatusString());
 				model.addAttribute("ordersId", ordersId);
 				model.addAttribute("goods", orders.getGoods());
-				model.addAttribute("custel", orders.getCustel());
+				model.addAttribute("custel", orders.getCusId());
 				model.addAttribute("exceData", orders.getExcedate());
-				String inspectTel=orders.getQualtel();
+				String inspectTel=orders.getQualId();
 				if("null".equals(inspectTel)) {
 					model.addAttribute("inspec", "请填写质检员号码");
 				}else
-					model.addAttribute("inspec", orders.getQualtel());
+					model.addAttribute("inspec", orders.getQualId());
 				
 				
 				model.addAttribute("exceData", orders.getExcedate());

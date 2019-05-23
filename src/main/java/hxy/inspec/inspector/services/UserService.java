@@ -19,6 +19,11 @@ public class UserService {
 		UserDao userDao = new UserDao();
 		return userDao.selectUserByPhone(phone);
 	}
+	
+	public User findUserById(String id) throws IOException {
+		UserDao userDao = new UserDao();
+		return userDao.selectUserById(id);
+	}
 	public boolean insert(User user) {
 		UserDao userDao = new UserDao();
 		try {

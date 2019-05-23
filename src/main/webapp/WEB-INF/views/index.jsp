@@ -1,3 +1,5 @@
+<%@page import="hxy.inspec.inspector.services.UserService"%>
+<%@page import="hxy.inspec.inspector.po.User"%>
 <!doctype html>
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
@@ -7,6 +9,21 @@
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="">
 <!--<![endif]-->
+  <%
+	User user = (User) request.getSession().getAttribute("user");
+  
+	if (user == null) {
+		System.out.print("用户没有登录");
+%>
+<script type="text/javascript">
+	window.top.location.href = 'login';
+</script>
+<%
+	} else {
+		UserService userService = new UserService();
+	user=	userService.findUserById(user.getUserId());
+	}
+  %>
 
 <head>
     <meta charset="utf-8">

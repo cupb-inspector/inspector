@@ -119,6 +119,10 @@ public class UserController {
 			user.setUserPasswd(newpasswd);
 			user.setUserTel(tel);
 			user.setEmail(email);
+			user.setIntegral("0");
+			user.setOrders("0");
+			user.setRmb("0");
+			user.setStatus("0");
 
 			if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
 				UserService userService = new UserService();

@@ -12,10 +12,10 @@
 	if (user != null) {
 
 		Orders orders = new Orders();
-		orders.setQualtel(user.getUserTel());
+		orders.setQualId(user.getUserId());
 		orders.setStatus("4");//查询订单已分配的订单
 		OrderService orderService = new OrderService();
-		ls = orderService.findUserByQualtelAndStatus(orders);
+		ls = orderService.findUserByQualIdAndStatus(orders);
 	} else {
 		request.getRequestDispatcher("/lose").forward(request, response);
 	}

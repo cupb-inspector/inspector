@@ -42,9 +42,9 @@ public class OrderService {
 		return list;
 	}
 
-	public List<Orders> findUserByQualtelAndStatus(Orders tel) throws IOException {
+	public List<Orders> findUserByQualIdAndStatus(Orders tel) throws IOException {
 		OrdersDao ordersDao = new OrdersDao();
-		List<Orders> list = ordersDao.findUserByQualtelAndStatus(tel);
+		List<Orders> list = ordersDao.findUserByQualIdAndStatus(tel);
 		return list;
 	}
 	

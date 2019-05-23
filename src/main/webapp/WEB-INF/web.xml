@@ -298,6 +298,9 @@
 		<servlet-name>register</servlet-name>
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
+	
+
+	
 
 
 </web-app>
