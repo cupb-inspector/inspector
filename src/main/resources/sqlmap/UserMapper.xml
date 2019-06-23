@@ -22,7 +22,7 @@
 	
 	<select id="findUserById" parameterType="String"
 		resultType="hxy.inspec.inspector.po.User">
-		SELECT * FROM inspector WHERE userId=#{userId}
+		SELECT * FROM inspect.inspector WHERE userId=#{userId}
 	</select>
 
 	<!-- 删除 -->

@@ -11,21 +11,23 @@
 <!--<![endif]-->
   <%
 	User user = (User) request.getSession().getAttribute("user");
-  
+    String uri = request.getHeader("Referer");//父链接
+    uri = uri.substring(uri.lastIndexOf("/"));//截取出/index
 	if (user == null) {
 		System.out.print("用户没有登录");
-%>
-<script type="text/javascript">
-	window.top.location.href = 'login';
-</script>
-<%
-	} else {
+		request.getRequestDispatcher("login").forward(request, response);//保持浏览器地址不变
+	}//父链接来源是自己，不用重新查服务器。
+	else if(uri.equals("/index"));
+	else {
 		UserService userService = new UserService();
-	user=	userService.findUserById(user.getUserId());
+		if (user.getUserId() == null) {//新用户注册后的情形
+			user = userService.login(user.getUserTel());
+		} else {
+			user = userService.findUserById(user.getUserId());
+		}
+		request.getSession().setAttribute("user", user);
 	}
-  %>
-
-
+%>
 
 <head>
     <meta charset="utf-8">
@@ -60,24 +62,19 @@
         #weatherWidget .currentDesc {
             color: #ffffff !important;
         }
-
         .traffic-chart {
             min-height: 335px;
         }
-
         #flotPie1 {
             height: 150px;
         }
-
         #flotPie1 td {
             padding: 3px;
         }
-
         #flotPie1 table {
             top: 20px !important;
             right: -10px !important;
         }
-
         .chart-container {
             display: table;
             min-width: 270px;
@@ -85,15 +82,12 @@
             padding-top: 10px;
             padding-bottom: 10px;
         }
-
         #flotLine5 {
             height: 105px;
         }
-
         #flotBarChart {
             height: 150px;
         }
-
         #cellPaiChart {
             height: 160px;
         }
@@ -190,7 +184,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">验货抢单</strong>
-                                <a href='check.html'>
+                                <a href='check'>
                                     <small><span class="badge badge-success float-right mt-1">全部订单 ></span></small>
                                 </a>
                             </div>
@@ -226,8 +220,8 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">未完成订单</strong>
-                                <a href='orders-all.html'>
-                                    <small><span class="badge badge-success float-right mt-1">全部订单 ></span></small>
+                                <a href='orders-undone'>
+                                    <small><span class="badge badge-success float-right mt-1">个人全部未完成订单 ></span></small>
                                 </a>
                             </div>
                             <div class="card-body">
@@ -383,14 +377,12 @@
     <script>
         jQuery(document).ready(function ($) {
             "use strict";
-
             // Pie chart flotPie1
             var piedata = [
                 { label: "Desktop visits", data: [[1, 32]], color: '#5c6bc0' },
                 { label: "Tab visits", data: [[1, 33]], color: '#ef5350' },
                 { label: "Mobile visits", data: [[1, 35]], color: '#66bb6a' }
             ];
-
             $.plot('#flotPie1', piedata, {
                 series: {
                     pie: {
@@ -433,12 +425,10 @@
                     hoverable: true,
                     clickable: true
                 }
-
             });
             // cellPaiChart End
             // Line Chart  #flotLine5
             var newCust = [[0, 3], [1, 5], [2, 4], [3, 7], [4, 9], [5, 3], [6, 6], [7, 4], [8, 10]];
-
             var plot = $.plot($('#flotLine5'), [{
                 data: newCust,
                 label: 'New Data Flow',
@@ -490,7 +480,6 @@
                             showGrid: true
                         }
                     });
-
                 chart.on('draw', function (data) {
                     if (data.type === 'line' || data.type === 'area') {
                         data.element.animate({
@@ -550,7 +539,6 @@
                             mode: 'nearest',
                             intersect: true
                         }
-
                     }
                 });
             }

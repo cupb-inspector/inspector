@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -86,7 +87,7 @@ public class UserController {
 
 	@RequestMapping(value = "/register-user", method = RequestMethod.POST)
 	public void userRegister(ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws IOException, NoSuchAlgorithmException {
+			throws IOException, NoSuchAlgorithmException, ServletException {
 		int resultCode = 0;
 		try {
 			// 返回页面防止出现中文乱码
@@ -149,8 +150,8 @@ public class UserController {
 						logger.info("用户注册成功");
 						request.getSession().setAttribute("user", user);
 						resultCode = 200;
-					} else
-						;
+					} 
+					else;
 				}
 			}
 		} else {
@@ -164,6 +165,7 @@ public class UserController {
 		String jsonStr2 = user_data.toString();
 		response.setCharacterEncoding("UTF-8");
 		try {
+			//request.getRequestDispatcher("index").forward(request, response);
 			response.getWriter().append(jsonStr2);
 		} catch (IOException e) {
 			e.printStackTrace();

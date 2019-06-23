@@ -1,4 +1,5 @@
 <%@page import="java.util.List"%>
+<%@page import="java.util.Vector"%>
 <%@page import="hxy.inspec.inspector.po.Orders"%>
 <%@page import="hxy.inspec.inspector.po.User"%>
 <%@page import="hxy.inspec.inspector.services.OrderService"%>
@@ -6,13 +7,14 @@
 	pageEncoding="UTF-8"%>
 <!doctype html>
 <%
-	//这里面应该是所有的未分配的订单
+	//这里面应该是所有的未分配的订单  odUD:orderUnredistributed
 	User user = (User) request.getSession().getAttribute("user");
 	List<Orders> ls = null;
 	if (user != null) {
-
+		//枚举模板，只要是迭代类型变量都可以
+		List<Integer> odUD=new Vector<Integer>();int[]temp = new int[]{1,2,3,4,5};for(int i:temp)odUD.add(i);
 		OrderService orderService = new OrderService();
-		ls = orderService.findOrdersByStatus("1");
+		ls = orderService.findOrdersByStatus(odUD);
 	} else {
 		request.getRequestDispatcher("/lose").forward(request, response);
 	}
