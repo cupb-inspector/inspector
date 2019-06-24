@@ -261,6 +261,15 @@
 		<servlet-name>orders-details</servlet-name>
 		<url-pattern>/orders-details</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>orders-undone</servlet-name>
+		<jsp-file>/WEB-INF/views/orders/orders-undone.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>orders-undone</servlet-name>
+		<url-pattern>/orders-undone</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>report-finished</servlet-name>

@@ -4,6 +4,8 @@ package hxy.inspec.inspector.services;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Vector;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,28 @@ public class OrderService {
 	public List<Orders> findOrdersByStatus(String status) throws IOException {
 		OrdersDao ordersDao = new OrdersDao();
 		List<Orders> list = ordersDao.findOrdersByStatus(status);
+		return list;
+	}
+	////枚举模板，只要是迭代类型变量都可以,重载方法，代码架构可以不变。
+	public List<Orders> findOrdersByStatus(List<Integer> status_s) throws IOException {
+		OrdersDao ordersDao = new OrdersDao();
+		List<Orders> list=new Vector<Orders>();
+		for (Integer status:status_s)
+			list.addAll(ordersDao.findOrdersByStatus(status.toString() ));
+		return list;
+	}
+	public List<Orders> findOrdersByStatusAndInspector(List<Integer> status_s,String qualId) throws IOException {
+		OrdersDao ordersDao = new OrdersDao();
+		List<Orders> list=new Vector<Orders>();
+		for (Integer status:status_s)
+			list.addAll(ordersDao.findOrdersByStatus(status.toString() ));
+		//lambda 过滤出只有需要的检查员的订单
+		try{
+			List<Orders> temp = list.stream().filter(
+					(Orders b) -> b.getQualId().equals(qualId)).collect(Collectors.toList());list=temp;
+		}catch(Exception e) {//订单为空
+			list=null;}
+				
 		return list;
 	}
 	

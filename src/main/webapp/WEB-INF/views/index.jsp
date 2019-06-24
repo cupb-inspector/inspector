@@ -14,16 +14,17 @@
   
 	if (user == null) {
 		System.out.print("用户没有登录");
-%>
-<script type="text/javascript">
-	window.top.location.href = 'login';
-</script>
-<%
-	} else {
+		request.getRequestDispatcher("login").forward(request, response);//保持浏览器地址不变
+	}else {
 		UserService userService = new UserService();
-	user=	userService.findUserById(user.getUserId());
+		if (user.getUserId() == null) {//新用户注册后的情形
+			user = userService.login(user.getUserTel());
+		} else {
+			user = userService.findUserById(user.getUserId());
+		}
+		request.getSession().setAttribute("user", user);
 	}
-  %>
+%>
 
 <head>
     <meta charset="utf-8">
