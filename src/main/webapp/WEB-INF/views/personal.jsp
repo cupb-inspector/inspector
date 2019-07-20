@@ -1,19 +1,41 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@page import="java.util.Vector"%>
 <%@page import="hxy.inspec.inspector.po.Orders"%>
 <%@page import="hxy.inspec.inspector.po.User"%>
-<%@page import="hxy.inspec.inspector.services.OrderService"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!doctype html>
+<%@page import="hxy.inspec.inspector.services.UserService"%>
+<jsp:include page="/WEB-INF/views/commons.jsp"/>
 <%
-	//这里面应该是个人所有的未完成的订单 需要检查员ID 以及 未完成状态字集合、枚举
+request.setCharacterEncoding("utf-8");
 	User user = (User) request.getSession().getAttribute("user");
-	if (user != null) {
-		System.out.print("质检员已经登录");
-	} else {
-		request.getRequestDispatcher("/lose").forward(request, response);
+
+	if (user == null) {
+		System.out.print("用户没有登录");
+		request.getRequestDispatcher("login").forward(request, response);//保持浏览器地址不变
+	}else {
+		UserService userService = new UserService();
+		if (user.getUserId() == null) {//新用户注册后的情形
+			user = userService.login(user.getUserTel());
+		} else {
+			user = userService.findUserById(user.getUserId());
+		}
+		request.getSession().setAttribute("user", user);
 	}
 %>
+<%! 
+String addressGetter(String[] S){
+	String address="";
+	for (String s :S)
+		if(s==null)continue;
+		else address+=s;
+	return address;
+}
+%>
+<%
+String[] S = {user.getProvince(),user.getCity(),user.getDistrict(),user.getAddress()}; 
+String userAddress = addressGetter(S);
+%>
+<!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
@@ -24,12 +46,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Ela Admin - HTML5 Admin Template</title>
+    <title>个人中心</title>
     <meta name="description" content="Ela Admin - HTML5 Admin Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-
     <link rel="stylesheet" href="assets/css/normalize.css">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
@@ -44,7 +63,12 @@
 
     <link href="assets/css/charts/chartist.min.css" rel="stylesheet">
     <link href="assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet">
-
+	<script src="js/jquery.min.js"></script>
+	<!--基于jQuery写的消息提示
+  https://www.awaimai.com/1627.html
+    -->
+	<link rel="stylesheet" href="hxy/css/hxy-alert.css">
+	<script src="hxy/js/hxy-alert.js"></script>
     <style>
             .white_content { 
             display: none; 
@@ -127,8 +151,9 @@
 </head>
 
 <body>
+	<div class="hxy-alert"></div>
         <!-- Content -->
-        <div class="content" style="background:#f1f2f7;height: 100%">
+                <div class="content"  style="background:#f1f2f7;height: 100%;">
             <!-- Animated -->
             <div class="animated fadeIn">
                 <!-- Widgets  -->
@@ -193,9 +218,9 @@
                                                                 <div class="col col-md-3"><label for="inspector-userName-input"
                                                                         class=" form-control-label">我的昵称</label>
                                                                 </div>
-                                                                <div class="col-12 col-md-9"><input type="input"
+                                                                <div class="col-12 col-md-9"><input type="text"
                                                                         id="inspector-userName-input" name="inspector-userName-input"
-                                                                        placeholder="<%=user.getUserName()%>"
+                                                                        value="<%=user.getUserName()%>"
                                                                         class="form-control"></div>
                                                             </div>
                                                             <div class="row form-group">
@@ -219,7 +244,7 @@
                                                                 <div class="col col-md-3"><label for="select"
                                                                         class=" form-control-label">我的状态</label></div>
                                                                 <div class="col-12 col-md-9">
-                                                                    <select name="inspect-status-select" id="inspect-status-select"
+                                                                    <select name="inspector-status-select" id="inspector-status-select"
                                                                         class="form-control">
                                                                         <option value="0">正常上岗</option>
                                                                         <option value="1">休息中</option>
@@ -227,7 +252,7 @@
                                                                         <option value="3">正在工作</option>
                                                                     </select>
                                                                     <script type="text/javascript">
-                                                            		document.getElementById("inspect-status-select")[<%=user.getStatus()%>].selected=true;
+                                                            		document.getElementById("inspector-status-select")[<%=user.getStatus()%>].selected=true;
                                                             		</script>
                                                                 </div>
                                                             </div> 
@@ -248,14 +273,15 @@
                                                                 <div class="col col-md-3"><label for="inspector-user-address"
                                                                         class=" form-control-label">我的地点</label>
                                                                 </div>
-                                                                <div class="col-12 col-md-9"><input type="input"
+                                                                <div class="col-12 col-md-9"><input type="text"
                                                                         id="inspector-user-address" name="inspector-user-address"
-                                                                        placeholder="<%=user.getProvince()+user.getCity()+user.getDistrict()+user.getAddress()%>"
+                                                                        
+                                                                        value="<%=userAddress%>"
                                                                         class="form-control"></div>
                                                             </div>
                                                            
                                                             <div>
-                                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                                <button type="submit" id="basicSaveBtn" class="btn btn-primary btn-sm">
                                                                     <i class="fa fa-dot-circle-o"></i> 保存
                                                                 </button>
                                                             </div>
@@ -313,20 +339,6 @@
                                                     <td><a class='connect' href = "JavaScript:void(0)" onclick = "openDialog()" style='color:mediumblue'>修改登录密码</a>
                                                     </td>
                                                 </tr>
-                                                <!-- 
-                                                <tr>
-                                                    <td><i class='fa fa-exclamation-circle'
-                                                            style='color:chocolate'></i> 币种选择</td>
-                                                    <td>      <select name="select" id="select"
-                                                                        class="form-control">
-                                                                        <option value="0">Please select</option>
-                                                                        <option value="1">人民币</option>
-                                                                        <option value="2">美元</option>
-                                                                    </select></td>
-                                                    <td><a class='connect' href='#' style='color:mediumblue'></a>
-                                                    </td>
-                                                </tr>
-                                                 -->
                                                 <tr>
                                                     <td><i class='fa fa-check-circle' style='color:forestgreen'></i> 绑定邮箱
                                                     </td>
@@ -361,15 +373,15 @@
                             <div action="register-user" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="row form-group">
                                         <div class="col col-md-3"><label style="float:right" for="text-input" class=" form-control-label">原密码</label></div>
-                                        <div class="col-12 col-md-9"><input type="text" id="origin" name="username"  class="form-control"></div>
+                                        <div class="col-12 col-md-9"><input type="text" autocomplete="off" placeholder="原密码" id="origin" name="originUserpasswd"  class="form-control"></div>
                                     </div>
                                     <div class="row form-group">
                                             <div class="col col-md-3"><label style="float:right" for="text-input" class=" form-control-label">新密码</label></div>
-                                            <div class="col-12 col-md-9"><input type="password" id="new1" name="account"  class="form-control"></div>
+                                            <div class="col-12 col-md-9"><input type="password" autocomplete="off" id="new1" name="passwd_"  class="form-control"></div>
                                         </div>
                                         <div class="row form-group">
                                                 <div class="col col-md-3"><label style="float:right" for="text-input" class=" form-control-label">新密码</label></div>
-                                                <div class="col-12 col-md-9"><input type="password" name ='passwd'id="new2" class="form-control" ><small class="form-text text-muted">再次填写一遍新密码</small></div>
+                                                <div class="col-12 col-md-9"><input type="password" autocomplete="off" name ='passwd'id="new2" class="form-control" ><small class="form-text text-muted">再次填写一遍新密码</small></div>
                                             </div>
                                    
                                             <div class="form-actions form-group">
@@ -445,7 +457,7 @@
     <script src="assets/weather/js/weather-init.js"></script>
     <script src="assets/js/lib/moment/moment.js"></script>
     <script src="assets/calendar/fullcalendar.min.js"></script>
-    <script src="assets/calendar/fullcalendar-init.js"></script>cript>
+    <script src="assets/calendar/fullcalendar-init.js"></script>
     <script src="assets/js/init/weather-init.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
@@ -645,58 +657,44 @@
         });
     </script>
     <script type="text/javascript">
-    $("#btn3").click(
+    $(document).ready(function () {
+    	$("#basicSaveBtn").click(
 				function () {
-					var excdate = $("#excdate").val();
-					var facname = $("#facname").val();
-					var facaddress = $("#facaddress").val();
-					var facman = $("#facman").val();
-					var factel = $("#factel").val();
-					var profile = $("#profile").val();
-					var goods = $("#goods").val();
-					var type = $("#select").val();
-					var goodsType = $("#goodsselect").val();
+					var status = $("#inspector-status-select").val();
+					var userName = $("#inspector-userName-input").val();
+					var address = $("#inspector-user-address").val();
 
-					console.log(excdate + "\t" + facname + "\t" + facaddress + "\t" + facman + "\t" + factel + "\t" + profile + "\t" + goods + "\t" + type + "\t" + goodsType)
-					var file_obj = document.getElementById('afile').files[0];
-					var fd = new FormData();
-					fd.append('excdate', excdate)
-					fd.append('facname', facname);
-					fd.append("facaddress", facaddress);
-					fd.append("facman", facman);
-					fd.append("factel", factel);
-					fd.append("profile", profile);
-					fd.append("goods", goods);
-					fd.append("type", type);
-					fd.append("goodsType", goodsType);
-					fd.append("file", file_obj);
-					fd.append("post_type", 'temp');//按钮的请求类型
+					console.log(userName + "\t" + address + "\t")
+					//var file_obj = document.getElementById('afile').files[0];
+					//var fd = new FormData();
+					//fd.append('status', status)
+					//fd.append('userName', userName);
+					//fd.append("address", address);
+					//fd.append("file", file_obj);
+					//fd.append("post_type", 'temp');//按钮的请求类型
 
 					$.ajax({
 						//几个参数需要注意一下
-						url: "${pageContext.request.contextPath}/cusInsertOrder",//url
+						url: "${pageContext.request.contextPath}/user-update-basic-info",//url
 						type: "POST",//方法类型
 						async: false,//同步需要等待服务器返回数据后再执行后面的两个函数，success和error。如果设置成异步，那么可能后面的success可能执行后还是没有收到消息。
 						dataType: "json",//预期服务器返回的数据类型
 						cache: false,
-						data: fd,//这个是发送给服务器的数据
-						processData: false,  //tell jQuery not to process the data
-						contentType: false,  //tell jQuery not to set contentType
-						success: function (result) {
-							console.log(result);//打印服务端返回的数据(调试用)
-							if (result.resultCode == 200) {
-								//跳转到首页	
-								$('.hxy-alert').removeClass('hxy-alert-warning')
-								$('.hxy-alert').html('草稿保存成功').addClass('hxy-alert-success').show().delay(2000).fadeOut();
-								document.getElementById("excdate").value = ''
-								document.getElementById("facname").value = ''
-								document.getElementById("facaddress").value = ''
-								document.getElementById("facman").value = ''
-								document.getElementById("factel").value = ''
-								document.getElementById("profile").value = ''
-								document.getElementById("goods").value = ''
-								document.getElementById("afile").value = ''
-							} else if (result.resultCode == 601) {
+						data : {
+		    				'status':status,
+		    				"address" : address,
+		    				"userName":userName
+		    			},//这个是发送给服务器的数据
+						//data: fd,//这个是发送给服务器的数据
+						//processData: false,  //tell jQuery not to process the data
+						//contentType: false,  //tell jQuery not to set contentType
+					success : function(result) {
+    				console.log(result.resultCode);//打印服务端返回的数据(调试用)
+    				if (result.resultCode == 200) {
+    					location.reload();
+    					$('.hxy-alert').removeClass('hxy-alert-warning')
+    					$('.hxy-alert').html('修改成功').addClass('hxy-alert-success').show().delay(2000).fadeOut();
+    				} else if (result.resultCode == 601) {
 								//	$(this).remove();
 								$('.hxy-alert')
 									.removeClass(
@@ -729,9 +727,10 @@
 						}
 					});
 				});
+    });
     </script>
     
-    <script>
+    <script type="text/javascript">
     function openDialog(){
         document.getElementById('light').style.display='block';
         document.getElementById('fade').style.display='block'
@@ -743,6 +742,7 @@
     function openEmail(){
         document.getElementById('mail').style.display='block';
         document.getElementById('fade1').style.display='block'
+      	console.log("openEmail"+"\t")
     }
     function closeEmail(){
         document.getElementById('mail').style.display='none';
@@ -794,7 +794,6 @@
     			success : function(result) {
     				console.log(result);//打印服务端返回的数据(调试用)
     				if (result.resultCode == 200) {
-    					closeDialog()
     					$('.hxy-alert').removeClass('hxy-alert-warning')
     					$('.hxy-alert').html('修改成功').addClass('hxy-alert-success').show().delay(2000).fadeOut();
     				} else if (result.resultCode == 601) {
@@ -850,7 +849,6 @@
     				console.log(result);//打印服务端返回的数据(调试用)
     				if (result.resultCode == 200) {
     					closeEmail()
-    					
     					$('#displayEmail').html(email);
     					$('.hxy-alert').removeClass('hxy-alert-warning')
     					$('.hxy-alert').html('修改成功').addClass('hxy-alert-success').show().delay(2000).fadeOut();

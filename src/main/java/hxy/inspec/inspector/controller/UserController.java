@@ -171,7 +171,7 @@ public class UserController {
 		} else {
 			resultCode = 404;
 		}
-		logger.info("返回注册信息");
+		logger.info("返回结果信息");
 		org.json.JSONObject user_data = new org.json.JSONObject();
 		user_data.put("resultCode", resultCode);
 		user_data.put("key2", "today4");
@@ -202,166 +202,228 @@ public class UserController {
 		return "login";
 	}
 	@RequestMapping(value = "/user-update-basic-info", method = RequestMethod.POST)
-	public void cusInsertOrder(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		// 获取用户是否登录
+	public void userUpdateBasicInfo(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		User user = (User) request.getSession().getAttribute("user");
-		int resultCode = -1;
-		String excdate = null;
-		String facname = null;
-		String facaddress = null;
-		String facman = null;
-		String factel = null;
-		String profile = null;
-		String type = null;
-		String reports = null;
-		int status = 0;
-		String fee = null;
-		String cost = null;
-		String otherCost = null;
-		String profit = null;
-		String goods = null;
-		String goodsType = null;
-		String fileName = null;
-		String fileUuidName = null;
-		boolean flag = false;
-		try {
-			// 使用Apache文件上传组件处理文件上传步骤：
-			// 1、创建一个DiskFileItemFactory工厂
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			// 2、创建一个文件上传解析器
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			// 解决上传文件名的中文乱码
-			upload.setHeaderEncoding("UTF-8");
-			// 3、判断提交上来的数据是否是上传表单的数据
-			if (!ServletFileUpload.isMultipartContent(request)) {
-				// 按照传统方式获取数据
-				return;
-			}
-			// 4、使用ServletFileUpload解析器解析上传数据，解析结果返回的是一个List<FileItem>集合，每一个FileItem对应一个Form表单的输入项
-			List<FileItem> list = null;
-			// 解决：https://blog.csdn.net/sinat_34104446/article/details/82755403
-			RequestContext context = new ServletRequestContext(request);
+		int resultCode = 0;
+		if (user != null) {
+			String status = null;
+			String address = "";
+			String userName = "";
 			try {
-				list = upload.parseRequest(context);
-				logger.info("遍历的大小" + list.size());
-			} catch (FileUploadException e) {
-				e.printStackTrace();
+				address = request.getParameter("address").trim();
+				status = request.getParameter("status").trim();
+				userName = request.getParameter("userName").trim();
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
-			for (FileItem item : list) {
-				logger.info("遍历文件");
-				if (item.isFormField()) {
-
-					String key = item.getFieldName();
-					String value = null;
-					try {
-						value = item.getString("UTF-8");
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-					}
-					logger.info(key + "\t" + value);
-					switch (key) {
-					case "excdate":
-						excdate = value;
-						break;
-					case "facname":
-						facname = value;
-						break;
-					case "facaddress":
-						facaddress = value;
-						break;
-					case "facman":
-						facman = value;
-						break;
-					case "factel":
-						factel = value;
-						break;
-					case "profile":
-						profile = value;
-						break;
-					case "goods":
-						goods = value;
-						break;
-					case "goodsType":
-						goodsType = value;
-						break;
-					default:
-						break;
-					}
-				} else {
-					String uuid = UUID.randomUUID().toString().replace("-", "");
-
-					// 生成随机数和id，文件重新命名为id+原来名字，存入数据库.
-					fileName = item.getName();
-					fileUuidName = uuid + fileName;
-					File file = new File(Configuration.FILE_ROOT_DIR, fileUuidName);
-					try { // 创建一个文件输出流
-						InputStream in = item.getInputStream();
-						FileOutputStream out = new FileOutputStream(file);
-						// 创建一个缓冲区
-						byte buffer[] = new byte[1024]; // 判断输入流中的数据是否已经读完的标识
-						int len = 0;
-						// 循环将输入流读入到缓冲区当中，(len=in.read(buffer))>0就表示in里面还有数据
-						while ((len = in.read(buffer)) > 0) {
-							out.write(buffer, 0, len);
-						} // 关闭输入流
-						in.close();
-						// 关闭输出流
-						out.close(); // 删除处理文件上传时生成的临时文件
-						item.delete();
+			
+			System.out.println("userName basic info update:"+userName+status+address);
+						user.setUserName(userName);
+						user.setStatus(status);
+						user.setAddress(address);
+						UserService userService = new UserService();
+						userService.update(user);
 						resultCode = 200;
-
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-						resultCode = 601;// 错误
-					} catch (IOException e) {
-						// TODO: handle exception
-					}
-					logger.info("文件名路径：" + file.getAbsolutePath());
-				}
-			}
-			flag = true;
-		} catch (NullPointerException e) {
-			logger.warn("传入的是一个null");
 		}
-		if (flag) {
-//			获取时间
-			Date now = new Date();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");// 可以方便地修改日期格式
-			String date = dateFormat.format(now);
-			User userTemp = new User();
-			UserService userService = new UserService();
-//			
-			if (UserService.update(userTemp)) {
-				resultCode = 200;
-			} else {
-				resultCode = 500;
+		else {
+				resultCode = 601;
 			}
-		} else {
-			resultCode = 400;// bad request
-		}
-		logger.info("修改是否成功信息返回");
+		
+		logger.info("返回结果信息");
 		org.json.JSONObject user_data = new org.json.JSONObject();
-		user_data.put("resultCode", resultCode);// 返回操作状态
-//		user_data.put("orderId", orderId);// 返回订单号
-//		user_data.put("moneyStatus", moneyStatus);// 返回订单是否有足够支付的的余额
-//		user_data.put("cusMoney", cusMoney);// 用户余额
-//		user_data.put("billPrice", billPrice);// 订单价格
+		user_data.put("resultCode", resultCode);
 		String jsonStr2 = user_data.toString();
 		response.setCharacterEncoding("UTF-8");
 		try {
 			response.getWriter().append(jsonStr2);
+			System.out.println("response writer over "+resultCode);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	@RequestMapping(value = "/user-update-security", method = RequestMethod.POST)
-	public void modify(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		User user = (User) request.getSession().getAttribute("user");
+//	public void cusInsertOrder(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+//		// 获取用户是否登录
+//		User user = (User) request.getSession().getAttribute("user");
+//		System.out.println("user-update-basic-info");
+//		int resultCode = -1;
+//		String address = null;
+//		int status = 0;
+//		String userName = null;
+//		boolean flag = false;
+//		try {
+//			// 使用Apache文件上传组件处理文件上传步骤：
+//			// 1、创建一个DiskFileItemFactory工厂
+//			DiskFileItemFactory factory = new DiskFileItemFactory();
+//			// 2、创建一个文件上传解析器
+//			ServletFileUpload upload = new ServletFileUpload(factory);
+//			// 解决上传文件名的中文乱码
+//			upload.setHeaderEncoding("UTF-8");
+//			// 3、判断提交上来的数据是否是上传表单的数据
+//			if (!ServletFileUpload.isMultipartContent(request)) {
+//				// 按照传统方式获取数据
+//				return;
+//			}
+//			// 4、使用ServletFileUpload解析器解析上传数据，解析结果返回的是一个List<FileItem>集合，每一个FileItem对应一个Form表单的输入项
+//			List<FileItem> list = null;
+//			// 解决：https://blog.csdn.net/sinat_34104446/article/details/82755403
+//			RequestContext context = new ServletRequestContext(request);
+//			try {
+//				list = upload.parseRequest(context);
+//				logger.info("遍历的大小" + list.size());
+//			} catch (FileUploadException e) {
+//				e.printStackTrace();
+//			}
+//			for (FileItem item : list) {
+//				logger.info("遍历文件");
+//				if (item.isFormField()) {
+//
+//					String key = item.getFieldName();
+//					String value = null;
+//					try {
+//						value = item.getString("UTF-8");
+//					} catch (UnsupportedEncodingException e) {
+//						e.printStackTrace();
+//					}
+//					logger.info(key + "\t" + value);
+//					switch (key) {
+//					case "excdate":
+//						excdate = value;
+//						break;
+//					case "facname":
+//						facname = value;
+//						break;
+//					case "facaddress":
+//						facaddress = value;
+//						break;
+//					case "facman":
+//						facman = value;
+//						break;
+//					case "factel":
+//						factel = value;
+//						break;
+//					case "profile":
+//						profile = value;
+//						break;
+//					case "goods":
+//						goods = value;
+//						break;
+//					case "goodsType":
+//						goodsType = value;
+//						break;
+//					default:
+//						break;
+//					}
+//				} else {
+//					String uuid = UUID.randomUUID().toString().replace("-", "");
+//
+//					// 生成随机数和id，文件重新命名为id+原来名字，存入数据库.
+//					fileName = item.getName();
+//					fileUuidName = uuid + fileName;
+//					File file = new File(Configuration.FILE_ROOT_DIR, fileUuidName);
+//					try { // 创建一个文件输出流
+//						InputStream in = item.getInputStream();
+//						FileOutputStream out = new FileOutputStream(file);
+//						// 创建一个缓冲区
+//						byte buffer[] = new byte[1024]; // 判断输入流中的数据是否已经读完的标识
+//						int len = 0;
+//						// 循环将输入流读入到缓冲区当中，(len=in.read(buffer))>0就表示in里面还有数据
+//						while ((len = in.read(buffer)) > 0) {
+//							out.write(buffer, 0, len);
+//						} // 关闭输入流
+//						in.close();
+//						// 关闭输出流
+//						out.close(); // 删除处理文件上传时生成的临时文件
+//						item.delete();
+//						resultCode = 200;
+//
+//					} catch (FileNotFoundException e) {
+//						e.printStackTrace();
+//						resultCode = 601;// 错误
+//					} catch (IOException e) {
+//						// TODO: handle exception
+//					}
+//					logger.info("文件名路径：" + file.getAbsolutePath());
+//				}
+//			}
+//			flag = true;
+//		} catch (NullPointerException e) {
+//			logger.warn("传入的是一个null");
+//		}
+//		if (flag) {
+////			获取时间
+//			Date now = new Date();
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");// 可以方便地修改日期格式
+//			String date = dateFormat.format(now);
+//			User userTemp = new User();
+//			UserService userService = new UserService();
+////			
+//			if (userService.update(userTemp)) {
+//				resultCode = 200;
+//			} else {
+//				resultCode = 500;
+//			}
+//		} else {
+//			resultCode = 400;// bad request
+//		}
+//		logger.info("修改是否成功信息返回");
+//		org.json.JSONObject user_data = new org.json.JSONObject();
+//		user_data.put("resultCode", resultCode);// 返回操作状态
+////		user_data.put("orderId", orderId);// 返回订单号
+////		user_data.put("moneyStatus", moneyStatus);// 返回订单是否有足够支付的的余额
+////		user_data.put("cusMoney", cusMoney);// 用户余额
+////		user_data.put("billPrice", billPrice);// 订单价格
+//		String jsonStr2 = user_data.toString();
+//		response.setCharacterEncoding("UTF-8");
+//		try {
+//			response.getWriter().append(jsonStr2);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+@RequestMapping(value = "/modify-email", method = RequestMethod.POST)
+public void modifyEmail(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	User user = (User) request.getSession().getAttribute("user");
 	int resultCode = 0;
+	if (user != null) {
+		String email = null;
+		try {
+			email = request.getParameter("email").trim();// 这个应该是新邮箱
+		} catch (Exception e) {
+		}
+		if (email != null && !email.isEmpty()) {
+			user.setEmail(email);
+			UserService userService = new UserService();
+			userService.update(user);
+
+			resultCode = 200;
+		} else {
+			resultCode = 502;
+		}
+	} else {
+		resultCode = 404;
+	}
+
+	org.json.JSONObject user_data = new org.json.JSONObject();
+	user_data.put("resultCode", resultCode);
+	String jsonStr2 = user_data.toString();
+	response.setCharacterEncoding("UTF-8");
+	try {
+		response.getWriter().append(jsonStr2);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+
+@RequestMapping(value = "/modify-passwd", method = RequestMethod.POST)
+public void modify(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	User user = (User) request.getSession().getAttribute("user");
+	int resultCode = 0;
+	if (user != null) {
 		String origin = null;
 		String new2 = null;
 		try {
-			origin = request.getParameter("origin").trim();// 这个应该是电话号码
+			origin = request.getParameter("origin").trim();// 这个应该是原来的密码
 			new2 = request.getParameter("new2").trim();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -389,16 +451,21 @@ public class UserController {
 		} else {
 			resultCode = 601;
 		}
-		logger.info("返回注册信息");
-		org.json.JSONObject user_data = new org.json.JSONObject();
-		user_data.put("resultCode", resultCode);
-		String jsonStr2 = user_data.toString();
-		response.setCharacterEncoding("UTF-8");
-		try {
-			response.getWriter().append(jsonStr2);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	} else {
+		resultCode = 404;
 	}
+	logger.info("返回结果信息");
+	org.json.JSONObject user_data = new org.json.JSONObject();
+	user_data.put("resultCode", resultCode);
+	String jsonStr2 = user_data.toString();
+	response.setCharacterEncoding("UTF-8");
+	try {
+		response.getWriter().append(jsonStr2);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+
+
 }
 

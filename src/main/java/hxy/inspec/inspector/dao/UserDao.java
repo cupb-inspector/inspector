@@ -43,4 +43,20 @@ public class UserDao {
 		return user;
 	}
 
+	public boolean update(User user) {
+		// TODO Auto-generated method stub
+		SqlSession sqlSession = null;
+		try {
+			sqlSession = DataConnection.getSqlSession();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		int flag = sqlSession.update("User.update", user);
+		logger.info("更新用户的信息：" + flag);
+		sqlSession.commit();// 清空缓存
+		sqlSession.close();
+		return flag>0; //这和customer 接口不一致呀 
+
+	}
+	
 }

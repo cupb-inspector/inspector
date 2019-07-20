@@ -37,9 +37,10 @@ public class UserService {
 		return false;
 		
 	}
-	public static boolean update(User userTemp) {
+	public boolean update(User user) {
 		// TODO Auto-generated method stub
-		return false;
+		UserDao userDao = new UserDao();
+		return	userDao.update(user);
 	}
 
 }
