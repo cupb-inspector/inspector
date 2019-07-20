@@ -28,13 +28,14 @@
 	<!-- 删除 -->
 	<delete id="delete" parameterType="hxy.inspec.inspector.po.User">
 		delete from inspector where
-		custel=#{custel}
+		userTel=#{userTel}
 	</delete>
 	<!-- 修改用户 -->
 	<update id="update" parameterType="hxy.inspec.inspector.po.User">
 		update inspector set
-		userName=#{userName},userTel=#{userTel},ttkdpasswd1=#{ttkdpasswd1},ttkdpasswd=#{ttkdpasswd},passwd=#{passwd},date=#{date},address=#{address}
-		where custel=#{custel}
+		userName=#{userName},userTel=#{userTel},userPasswd=#{userPasswd},district=#{district},
+		province=#{province},city=#{city},address=#{address},email=#{email},status=#{status}
+		where userTel=#{userTel}
 	</update>
-
+		
 </mapper>

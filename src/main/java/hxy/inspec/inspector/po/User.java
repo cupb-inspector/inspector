@@ -19,5 +19,6 @@ public class User {
 	private String orders;//订单数
 	private String integral;//积分
 	private String status;//质检员状态
+	
 
 }
